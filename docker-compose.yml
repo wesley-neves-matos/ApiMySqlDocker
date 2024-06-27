@@ -1,0 +1,42 @@
+version: '3.4'
+
+services:
+  apimysqldocker:
+    image: ${DOCKER_REGISTRY-}apimysqldocker
+    container_name: products.api
+    build:
+      context: .
+      dockerfile: ApiMySqlDocker/Dockerfile
+    depends_on: 
+      - mysqlserver
+    ports:
+      - 5000:8080
+    networks:
+      - products.api.network
+    environment:
+      - CONNECTION_STRING=Server=mysqlserver;Port=3306;Database=ProductsDB;Uid=wes;Pwd=1234567;
+    
+  mysqlserver:
+    container_name: mysqlserver
+    image: mysql
+    ports:
+      - "3306:3306" 
+    volumes:
+      - dbmysql-volume:/var/lib/mysql
+    restart: always  
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+      - MYSQL_USER=wes
+      - MYSQL_PASSWORD=1234567
+      - MYSQL_DATABASE=ProductsDB
+      - bind-address=0.0.0.0
+    networks:
+      - products.api.network
+    
+volumes:
+  dbmysql-volume:
+    name: dbmysql-volume
+
+networks:
+  products.api.network:
+    name: products.api.network

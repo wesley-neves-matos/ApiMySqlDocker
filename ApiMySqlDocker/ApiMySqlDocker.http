@@ -1,0 +1,6 @@
+@ApiMySqlDocker_HostAddress = http://localhost:5096
+
+GET {{ApiMySqlDocker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
